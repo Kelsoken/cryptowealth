@@ -1,15 +1,19 @@
 /* Crypto Staking Comparison App Styles */
 
 :root {
-    --primary-color: #007bff;
-    --secondary-color: #6c757d;
+    --primary-color: #3a57e8;
+    --secondary-color: #8f9bf7;
+    --background-color: #f8f9fa;
+    --card-background: #ffffff;
+    --text-color: #333333;
+    --border-color: #dee2e6;
     --success-color: #28a745;
     --warning-color: #ffc107;
     --danger-color: #dc3545;
     --info-color: #17a2b8;
     --light-color: #f8f9fa;
     --dark-color: #343a40;
-    --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --gradient-primary: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
     --gradient-success: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
     --gradient-warning: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
     --shadow-sm: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
@@ -21,9 +25,10 @@
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    padding-top: 20px;
     min-height: 100vh;
-    color: var(--dark-color);
 }
 
 .container {
@@ -34,10 +39,10 @@ body {
 .header {
     background: var(--gradient-primary);
     color: white;
-    padding: 2rem 0;
+    padding: 2rem;
+    border-radius: 10px;
     margin-bottom: 2rem;
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-lg);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 .header h1 {
@@ -267,32 +272,29 @@ body {
 }
 
 .exchange-badge {
-    padding: 0.25rem 0.75rem;
-    border-radius: 1rem;
-    font-size: 0.8rem;
     font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    padding: 0.35rem 0.65rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
 }
 
-.exchange-bitvavo {
-    background: #f8f9fa;
-    color: #495057;
-    border: 1px solid #dee2e6;
-}
-
-.exchange-coinbase {
-    background: #0052ff;
+.badge-bitvavo {
+    background-color: #0052ff;
     color: white;
 }
 
-.exchange-binance {
-    background: #f0b90b;
-    color: #000;
+.badge-coinbase {
+    background-color: #0667d0;
+    color: white;
 }
 
-.exchange-kraken {
-    background: #5841a8;
+.badge-binance {
+    background-color: #f0b90b;
+    color: #333;
+}
+
+.badge-kraken {
+    background-color: #5661f3;
     color: white;
 }
 
@@ -543,6 +545,52 @@ body {
                 var(--gradient-primary) border-box;
 }
 
+/* Additional Staking Page Styles */
+.apy-value {
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.positive {
+    color: #28a745;
+}
+
+.negative {
+    color: #dc3545;
+}
+
+.crypto-logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 12px;
+    object-fit: cover;
+}
+
+.best-apy {
+    border-left: 4px solid #28a745;
+}
+
+.api-status {
+    font-size: 0.9rem;
+    padding: 0.35rem 0.65rem;
+    border-radius: 50px;
+}
+
+.rate-limit-bar {
+    height: 10px;
+    border-radius: 5px;
+    background-color: #e9ecef;
+    overflow: hidden;
+    margin-top: 5px;
+}
+
+.rate-limit-progress {
+    height: 100%;
+    background-color: var(--primary-color);
+    transition: width 0.5s ease;
+}
+
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
     :root {
@@ -568,5 +616,16 @@ body {
         background: #2d2d2d;
         border-color: #404040;
         color: var(--dark-color);
+    }
+}
+
+/* Responsive Design for Staking Page */
+@media (max-width: 768px) {
+    .header h1 {
+        font-size: 1.8rem;
+    }
+    
+    .header p {
+        font-size: 1rem;
     }
 }
