@@ -40,11 +40,32 @@ def home():
 
 @app.route('/staking')
 def staking():
-    return render_template('staking.html')
+    try:
+        return render_template('staking.html')
+    except Exception as e:
+        # Fallback if template not found
+        return f"""
+        <html>
+        <head><title>AI Staking Advisor</title></head>
+        <body>
+            <h1>AI Staking Advisor</h1>
+            <p>Template loading error: {str(e)}</p>
+            <p>Please check the templates directory.</p>
+        </body>
+        </html>
+        """, 500
 
 @app.route('/landing')
 def landing():
-    return render_template('landing.html')
+    return """
+    <html>
+    <head><title>CryptoWealth Landing</title></head>
+    <body>
+        <h1>Welcome to CryptoWealth</h1>
+        <p><a href="/staking">Go to Staking Advisor</a></p>
+    </body>
+    </html>
+    """
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -60,7 +81,20 @@ def login():
         else:
             flash('Invalid credentials', 'error')
     
-    return render_template('login.html')
+    return """
+    <html>
+    <head><title>Login - CryptoWealth</title></head>
+    <body>
+        <h1>Login</h1>
+        <form method="post">
+            <input type="text" name="username" placeholder="Username" required><br><br>
+            <input type="password" name="password" placeholder="Password" required><br><br>
+            <button type="submit">Login</button>
+        </form>
+        <p><a href="/staking">Go to Staking Advisor</a></p>
+    </body>
+    </html>
+    """
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -73,25 +107,54 @@ def register():
         flash('Account created successfully! Please login.', 'success')
         return redirect(url_for('login'))
     
-    return render_template('register.html')
+    return """
+    <html>
+    <head><title>Register - CryptoWealth</title></head>
+    <body>
+        <h1>Register</h1>
+        <form method="post">
+            <input type="text" name="username" placeholder="Username" required><br><br>
+            <input type="email" name="email" placeholder="Email" required><br><br>
+            <input type="password" name="password" placeholder="Password" required><br><br>
+            <button type="submit">Register</button>
+        </form>
+        <p><a href="/login">Already have an account? Login</a></p>
+    </body>
+    </html>
+    """
 
 @app.route('/dashboard')
 def dashboard():
     if 'user' not in session:
         return redirect(url_for('login'))
     
-    return render_template('dashboard.html', 
-                         user=session['user'],
-                         crypto_data=MOCK_CRYPTO_DATA)
+    return f"""
+    <html>
+    <head><title>Dashboard - CryptoWealth</title></head>
+    <body>
+        <h1>Dashboard</h1>
+        <p>Welcome, {session['user']}!</p>
+        <p><a href="/staking">Go to Staking Advisor</a></p>
+        <p><a href="/logout">Logout</a></p>
+    </body>
+    </html>
+    """
 
 @app.route('/arbitrage')
 def arbitrage():
     if 'user' not in session:
         return redirect(url_for('login'))
     
-    return render_template('arbitrage.html', 
-                         user=session['user'],
-                         arbitrage_data=MOCK_ARBITRAGE_DATA)
+    return """
+    <html>
+    <head><title>Arbitrage - CryptoWealth</title></head>
+    <body>
+        <h1>Arbitrage Opportunities</h1>
+        <p>Arbitrage feature coming soon!</p>
+        <p><a href="/staking">Go to Staking Advisor</a></p>
+    </body>
+    </html>
+    """
 
 @app.route('/logout')
 def logout():
@@ -124,11 +187,29 @@ def api_arbitrage_opportunities():
 # Error handlers
 @app.errorhandler(404)
 def not_found(error):
-    return render_template('404.html'), 404
+    return """
+    <html>
+    <head><title>404 - Page Not Found</title></head>
+    <body>
+        <h1>404 - Page Not Found</h1>
+        <p>The page you're looking for doesn't exist.</p>
+        <p><a href="/staking">Go to Staking Advisor</a></p>
+    </body>
+    </html>
+    """, 404
 
 @app.errorhandler(500)
 def internal_error(error):
-    return render_template('500.html'), 500
+    return """
+    <html>
+    <head><title>500 - Internal Server Error</title></head>
+    <body>
+        <h1>500 - Internal Server Error</h1>
+        <p>Something went wrong on our end.</p>
+        <p><a href="/staking">Go to Staking Advisor</a></p>
+    </body>
+    </html>
+    """, 500
 
 # Vercel entry point
 def handler(request):
