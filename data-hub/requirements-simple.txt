@@ -1,0 +1,15 @@
+# Core dependencies (without pandas and complex packages)
+flask==2.3.3
+flask-cors==4.0.0
+requests==2.31.0
+python-dotenv==1.0.0
+
+# Scheduling
+schedule==1.2.0
+
+# Logging
+loguru==0.7.2
+
+# Utilities
+python-dateutil==2.8.2
+pytz==2023.3

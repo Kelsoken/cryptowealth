@@ -1,17 +1,17 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import logging
+from datetime import datetime, timezone
+from typing import Dict, List, Optional
 import sys
 import os
 from pathlib import Path
-from datetime import datetime, timezone
-from typing import Dict, List, Optional
 
 # Add the data-hub directory to Python path
 data_hub_dir = Path(__file__).parent.parent
 sys.path.insert(0, str(data_hub_dir))
 
-from utils.redis_client import redis_client
+from collectors.simple_data_collector import SimpleDataCollector
 
 app = Flask(__name__)
 CORS(app)
@@ -23,21 +23,21 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+# Global data collector instance
+data_collector = SimpleDataCollector()
+
 @app.route('/api/data/health', methods=['GET'])
 def health_check():
     """Health check endpoint"""
     try:
-        redis_healthy = redis_client.health_check()
-        
         health_status = {
-            'status': 'healthy' if redis_healthy else 'unhealthy',
+            'status': 'healthy',
             'timestamp': datetime.now(timezone.utc).isoformat(),
-            'redis_connected': redis_healthy,
-            'version': '1.0.0'
+            'version': '1.0.0-simple',
+            'cache_size': len(data_collector.cache)
         }
         
-        status_code = 200 if redis_healthy else 503
-        return jsonify(health_status), status_code
+        return jsonify(health_status), 200
     
     except Exception as e:
         logger.error(f"Health check failed: {e}")
@@ -51,11 +51,15 @@ def health_check():
 def get_market_prices():
     """Get market prices for all coins"""
     try:
-        limit = request.args.get('limit', 100, type=int)
-        symbol = request.args.get('symbol', None)
+        limit = request.args.get('limit', 50, type=int)
         
-        # Get data from Redis
-        market_data = redis_client.get_data('market_prices')
+        # Get data from cache
+        market_data = data_collector.get_cached_data('market_prices')
+        
+        if not market_data:
+            # Try to collect fresh data
+            collected = data_collector.collect_all_data()
+            market_data = collected.get('market_prices')
         
         if not market_data:
             return jsonify({
@@ -64,10 +68,6 @@ def get_market_prices():
             }), 404
         
         data = market_data.get('data', [])
-        
-        # Filter by symbol if provided
-        if symbol:
-            data = [coin for coin in data if coin['symbol'].upper() == symbol.upper()]
         
         # Limit results
         data = data[:limit]
@@ -93,7 +93,7 @@ def get_coin_data(symbol):
         symbol = symbol.upper()
         
         # Get market data
-        market_data = redis_client.get_data('market_prices')
+        market_data = data_collector.get_cached_data('market_prices')
         coin_data = None
         
         if market_data:
@@ -109,7 +109,7 @@ def get_coin_data(symbol):
             }), 404
         
         # Get staking data if available
-        staking_data = redis_client.get_data('staking_data')
+        staking_data = data_collector.get_cached_data('staking_data')
         staking_info = None
         
         if staking_data:
@@ -140,8 +140,13 @@ def get_staking_data():
     try:
         symbols = request.args.get('symbols', None)
         
-        # Get data from Redis
-        staking_data = redis_client.get_data('staking_data')
+        # Get data from cache
+        staking_data = data_collector.get_cached_data('staking_data')
+        
+        if not staking_data:
+            # Try to collect fresh data
+            collected = data_collector.collect_all_data()
+            staking_data = collected.get('staking_data')
         
         if not staking_data:
             return jsonify({
@@ -176,7 +181,12 @@ def get_top_staking():
     try:
         limit = request.args.get('limit', 20, type=int)
         
-        staking_data = redis_client.get_data('staking_data')
+        staking_data = data_collector.get_cached_data('staking_data')
+        
+        if not staking_data:
+            # Try to collect fresh data
+            collected = data_collector.collect_all_data()
+            staking_data = collected.get('staking_data')
         
         if not staking_data:
             return jsonify({
@@ -210,13 +220,17 @@ def get_top_staking():
 def get_market_summary():
     """Get market summary data"""
     try:
-        summary = redis_client.get_data('market_summary')
+        summary = data_collector.get_cached_data('market_summary')
         
         if not summary:
-            return jsonify({
-                'error': 'No market summary available',
-                'timestamp': datetime.now(timezone.utc).isoformat()
-            }), 404
+            # Try to collect fresh data
+            collected = data_collector.collect_all_data()
+            summary = {
+                'timestamp': collected['timestamp'],
+                'total_coins': len(collected.get('market_prices', {}).get('data', [])),
+                'total_staking': len(collected.get('staking_data', {}).get('data', [])),
+                'status': 'success'
+            }
         
         return jsonify(summary)
     
@@ -239,7 +253,7 @@ def search_coins():
                 'timestamp': datetime.now(timezone.utc).isoformat()
             }), 400
         
-        market_data = redis_client.get_data('market_prices')
+        market_data = data_collector.get_cached_data('market_prices')
         
         if not market_data:
             return jsonify({
@@ -275,7 +289,7 @@ if __name__ == '__main__':
     # Create logs directory if it doesn't exist
     os.makedirs('logs', exist_ok=True)
     
-    logger.info("Starting Universal Data API on 0.0.0.0:5000")
+    logger.info("Starting Simple Data API on 0.0.0.0:5000")
     print("Available endpoints:")
     print("  GET /api/data/health - Health check")
     print("  GET /api/data/market-prices - Market prices")
