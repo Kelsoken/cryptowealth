@@ -47,6 +47,7 @@ function StakingPage() {
   // Top 50 Cryptocurrencies with Staking Data
   const fallbackData = {
     data: [
+      // Top 10 for testing
       {
         id: 'bitcoin',
         symbol: 'BTC',
@@ -64,6 +65,824 @@ function StakingPage() {
           slashing_risk: 'N/A'
         }
       },
+      {
+        id: 'ethereum',
+        symbol: 'ETH',
+        name: 'Ethereum',
+        current_price: 2650,
+        market_cap: 320000000000,
+        staking_apy: 4.2,
+        risk_level: 'low',
+        staking_details: {
+          min_stake: 32,
+          validator_count: 900000,
+          total_staked: 32000000,
+          confidence: 'high',
+          lock_period: 'Indefinite',
+          slashing_risk: 'Low'
+        }
+      },
+      {
+        id: 'tether',
+        symbol: 'USDT',
+        name: 'Tether',
+        current_price: 1.00,
+        market_cap: 95000000000,
+        staking_apy: 0,
+        risk_level: 'none',
+        staking_details: {
+          min_stake: 0,
+          validator_count: 0,
+          total_staked: 0,
+          confidence: 'none',
+          lock_period: 'N/A',
+          slashing_risk: 'N/A'
+        }
+      },
+      {
+        id: 'bnb',
+        symbol: 'BNB',
+        name: 'BNB',
+        current_price: 315,
+        market_cap: 48000000000,
+        staking_apy: 3.8,
+        risk_level: 'low',
+        staking_details: {
+          min_stake: 0.1,
+          validator_count: 100,
+          total_staked: 150000000,
+          confidence: 'high',
+          lock_period: '7 days',
+          slashing_risk: 'Low'
+        }
+      },
+      {
+        id: 'solana',
+        symbol: 'SOL',
+        name: 'Solana',
+        current_price: 95,
+        market_cap: 42000000000,
+        staking_apy: 6.5,
+        risk_level: 'medium',
+        staking_details: {
+          min_stake: 0.1,
+          validator_count: 2000,
+          total_staked: 400000000,
+          confidence: 'medium',
+          lock_period: '2-3 days',
+          slashing_risk: 'Medium'
+        }
+      },
+      {
+        id: 'xrp',
+        symbol: 'XRP',
+        name: 'XRP',
+        current_price: 0.62,
+        market_cap: 35000000000,
+        staking_apy: 0,
+        risk_level: 'none',
+        staking_details: {
+          min_stake: 0,
+          validator_count: 0,
+          total_staked: 0,
+          confidence: 'none',
+          lock_period: 'N/A',
+          slashing_risk: 'N/A'
+        }
+      },
+      {
+        id: 'usd-coin',
+        symbol: 'USDC',
+        name: 'USD Coin',
+        current_price: 1.00,
+        market_cap: 28000000000,
+        staking_apy: 0,
+        risk_level: 'none',
+        staking_details: {
+          min_stake: 0,
+          validator_count: 0,
+          total_staked: 0,
+          confidence: 'none',
+          lock_period: 'N/A',
+          slashing_risk: 'N/A'
+        }
+      },
+      {
+        id: 'staked-ether',
+        symbol: 'STETH',
+        name: 'Lido Staked ETH',
+        current_price: 2650,
+        market_cap: 25000000000,
+        staking_apy: 4.1,
+        risk_level: 'low',
+        staking_details: {
+          min_stake: 0.1,
+          validator_count: 30000,
+          total_staked: 9000000,
+          confidence: 'high',
+          lock_period: 'None',
+          slashing_risk: 'Low'
+        }
+      },
+      {
+        id: 'cardano',
+        symbol: 'ADA',
+        name: 'Cardano',
+        current_price: 0.45,
+        market_cap: 16000000000,
+        staking_apy: 5.8,
+        risk_level: 'low',
+        staking_details: {
+          min_stake: 1,
+          validator_count: 3000,
+          total_staked: 24000000000,
+          confidence: 'high',
+          lock_period: 'None',
+          slashing_risk: 'None'
+        }
+      },
+      {
+        id: 'avalanche-2',
+        symbol: 'AVAX',
+        name: 'Avalanche',
+        current_price: 28,
+        market_cap: 11000000000,
+        staking_apy: 8.9,
+        risk_level: 'medium',
+        staking_details: {
+          min_stake: 25,
+          validator_count: 1200,
+          total_staked: 250000000,
+          confidence: 'high',
+          lock_period: '14-21 days',
+          slashing_risk: 'Low'
+        }
+      },
+      {
+        id: 'dogecoin',
+        symbol: 'DOGE',
+        name: 'Dogecoin',
+        current_price: 0.08,
+        market_cap: 12000000000,
+        staking_apy: 0,
+        risk_level: 'none',
+        staking_details: {
+          min_stake: 0,
+          validator_count: 0,
+          total_staked: 0,
+          confidence: 'none',
+          lock_period: 'N/A',
+          slashing_risk: 'N/A'
+        }
+      },
+      {
+        id: 'polkadot',
+        symbol: 'DOT',
+        name: 'Polkadot',
+        current_price: 6.8,
+        market_cap: 8500000000,
+        staking_apy: 12.5,
+        risk_level: 'medium',
+        staking_details: {
+          min_stake: 1,
+          validator_count: 1000,
+          total_staked: 600000000,
+          confidence: 'high',
+          lock_period: '28 days',
+          slashing_risk: 'Medium'
+        }
+      },
+      {
+        id: 'chainlink',
+        symbol: 'LINK',
+        name: 'Chainlink',
+        current_price: 14.5,
+        market_cap: 8000000000,
+        staking_apy: 0,
+        risk_level: 'none',
+        staking_details: {
+          min_stake: 0,
+          validator_count: 0,
+          total_staked: 0,
+          confidence: 'none',
+          lock_period: 'N/A',
+          slashing_risk: 'N/A'
+        }
+      },
+      {
+        id: 'polygon',
+        symbol: 'MATIC',
+        name: 'Polygon',
+        current_price: 0.85,
+        market_cap: 7800000000,
+        staking_apy: 4.8,
+        risk_level: 'low',
+        staking_details: {
+          min_stake: 1,
+          validator_count: 100,
+          total_staked: 9000000000,
+          confidence: 'high',
+          lock_period: '3 days',
+          slashing_risk: 'Low'
+        }
+      },
+      {
+        id: 'litecoin',
+        symbol: 'LTC',
+        name: 'Litecoin',
+        current_price: 72,
+        market_cap: 5400000000,
+        staking_apy: 0,
+        risk_level: 'none',
+        staking_details: {
+          min_stake: 0,
+          validator_count: 0,
+          total_staked: 0,
+          confidence: 'none',
+          lock_period: 'N/A',
+          slashing_risk: 'N/A'
+        }
+      },
+      {
+        id: 'cosmos',
+        symbol: 'ATOM',
+        name: 'Cosmos',
+        current_price: 8.5,
+        market_cap: 3200000000,
+        staking_apy: 19.2,
+        risk_level: 'high',
+        staking_details: {
+          min_stake: 0.1,
+          validator_count: 150,
+          total_staked: 200000000,
+          confidence: 'medium',
+          lock_period: '21 days',
+          slashing_risk: 'High'
+        }
+      },
+      {
+        id: 'uniswap',
+        symbol: 'UNI',
+        name: 'Uniswap',
+        current_price: 6.2,
+        market_cap: 3700000000,
+        staking_apy: 0,
+        risk_level: 'none',
+        staking_details: {
+          min_stake: 0,
+          validator_count: 0,
+          total_staked: 0,
+          confidence: 'none',
+          lock_period: 'N/A',
+          slashing_risk: 'N/A'
+        }
+      },
+      {
+        id: 'ethereum-classic',
+        symbol: 'ETC',
+        name: 'Ethereum Classic',
+        current_price: 18.5,
+        market_cap: 2800000000,
+        staking_apy: 0,
+        risk_level: 'none',
+        staking_details: {
+          min_stake: 0,
+          validator_count: 0,
+          total_staked: 0,
+          confidence: 'none',
+          lock_period: 'N/A',
+          slashing_risk: 'N/A'
+        }
+      },
+      {
+        id: 'monero',
+        symbol: 'XMR',
+        name: 'Monero',
+        current_price: 155,
+        market_cap: 2800000000,
+        staking_apy: 0,
+        risk_level: 'none',
+        staking_details: {
+          min_stake: 0,
+          validator_count: 0,
+          total_staked: 0,
+          confidence: 'none',
+          lock_period: 'N/A',
+          slashing_risk: 'N/A'
+        }
+      },
+      {
+        id: 'stellar',
+        symbol: 'XLM',
+        name: 'Stellar',
+        current_price: 0.12,
+        market_cap: 3500000000,
+        staking_apy: 0,
+        risk_level: 'none',
+        staking_details: {
+          min_stake: 0,
+          validator_count: 0,
+          total_staked: 0,
+          confidence: 'none',
+          lock_period: 'N/A',
+          slashing_risk: 'N/A'
+        }
+      },
+      {
+        id: 'algorand',
+        symbol: 'ALGO',
+        name: 'Algorand',
+        current_price: 0.18,
+        market_cap: 1400000000,
+        staking_apy: 4.5,
+        risk_level: 'low',
+        staking_details: {
+          min_stake: 1,
+          validator_count: 100,
+          total_staked: 7000000000,
+          confidence: 'high',
+          lock_period: 'None',
+          slashing_risk: 'None'
+        }
+      },
+      {
+        id: 'vechain',
+        symbol: 'VET',
+        name: 'VeChain',
+        current_price: 0.025,
+        market_cap: 1800000000,
+        staking_apy: 1.2,
+        risk_level: 'low',
+        staking_details: {
+          min_stake: 1,
+          validator_count: 101,
+          total_staked: 72000000000,
+          confidence: 'high',
+          lock_period: 'None',
+          slashing_risk: 'None'
+        }
+      },
+      {
+        id: 'filecoin',
+        symbol: 'FIL',
+        name: 'Filecoin',
+        current_price: 4.2,
+        market_cap: 2000000000,
+        staking_apy: 0,
+        risk_level: 'none',
+        staking_details: {
+          min_stake: 0,
+          validator_count: 0,
+          total_staked: 0,
+          confidence: 'none',
+          lock_period: 'N/A',
+          slashing_risk: 'N/A'
+        }
+      },
+      {
+        id: 'hedera-hashgraph',
+        symbol: 'HBAR',
+        name: 'Hedera',
+        current_price: 0.045,
+        market_cap: 1500000000,
+        staking_apy: 6.5,
+        risk_level: 'medium',
+        staking_details: {
+          min_stake: 1,
+          validator_count: 39,
+          total_staked: 33000000000,
+          confidence: 'medium',
+          lock_period: 'None',
+          slashing_risk: 'Low'
+        }
+      },
+      {
+        id: 'near',
+        symbol: 'NEAR',
+        name: 'NEAR Protocol',
+        current_price: 1.8,
+        market_cap: 1800000000,
+        staking_apy: 8.2,
+        risk_level: 'medium',
+        staking_details: {
+          min_stake: 1,
+          validator_count: 100,
+          total_staked: 1000000000,
+          confidence: 'medium',
+          lock_period: '1-3 days',
+          slashing_risk: 'Medium'
+        }
+      },
+      {
+        id: 'fantom',
+        symbol: 'FTM',
+        name: 'Fantom',
+        current_price: 0.35,
+        market_cap: 1000000000,
+        staking_apy: 4.8,
+        risk_level: 'low',
+        staking_details: {
+          min_stake: 1,
+          validator_count: 100,
+          total_staked: 2800000000,
+          confidence: 'high',
+          lock_period: '7 days',
+          slashing_risk: 'Low'
+        }
+      },
+      {
+        id: 'elrond-erd-2',
+        symbol: 'EGLD',
+        name: 'MultiversX',
+        current_price: 45,
+        market_cap: 1200000000,
+        staking_apy: 11.2,
+        risk_level: 'medium',
+        staking_details: {
+          min_stake: 1,
+          validator_count: 3200,
+          total_staked: 26000000,
+          confidence: 'high',
+          lock_period: '10 days',
+          slashing_risk: 'Medium'
+        }
+      },
+      {
+        id: 'tezos',
+        symbol: 'XTZ',
+        name: 'Tezos',
+        current_price: 0.95,
+        market_cap: 900000000,
+        staking_apy: 5.5,
+        risk_level: 'low',
+        staking_details: {
+          min_stake: 1,
+          validator_count: 400,
+          total_staked: 950000000,
+          confidence: 'high',
+          lock_period: 'None',
+          slashing_risk: 'Low'
+        }
+      },
+      {
+        id: 'the-sandbox',
+        symbol: 'SAND',
+        name: 'The Sandbox',
+        current_price: 0.42,
+        market_cap: 950000000,
+        staking_apy: 0,
+        risk_level: 'none',
+        staking_details: {
+          min_stake: 0,
+          validator_count: 0,
+          total_staked: 0,
+          confidence: 'none',
+          lock_period: 'N/A',
+          slashing_risk: 'N/A'
+        }
+      },
+      {
+        id: 'decentraland',
+        symbol: 'MANA',
+        name: 'Decentraland',
+        current_price: 0.38,
+        market_cap: 700000000,
+        staking_apy: 0,
+        risk_level: 'none',
+        staking_details: {
+          min_stake: 0,
+          validator_count: 0,
+          total_staked: 0,
+          confidence: 'none',
+          lock_period: 'N/A',
+          slashing_risk: 'N/A'
+        }
+      },
+      {
+        id: 'chiliz',
+        symbol: 'CHZ',
+        name: 'Chiliz',
+        current_price: 0.08,
+        market_cap: 700000000,
+        staking_apy: 0,
+        risk_level: 'none',
+        staking_details: {
+          min_stake: 0,
+          validator_count: 0,
+          total_staked: 0,
+          confidence: 'none',
+          lock_period: 'N/A',
+          slashing_risk: 'N/A'
+        }
+      },
+      {
+        id: 'flow',
+        symbol: 'FLOW',
+        name: 'Flow',
+        current_price: 0.65,
+        market_cap: 650000000,
+        staking_apy: 0,
+        risk_level: 'none',
+        staking_details: {
+          min_stake: 0,
+          validator_count: 0,
+          total_staked: 0,
+          confidence: 'none',
+          lock_period: 'N/A',
+          slashing_risk: 'N/A'
+        }
+      },
+      {
+        id: 'apecoin',
+        symbol: 'APE',
+        name: 'ApeCoin',
+        current_price: 1.8,
+        market_cap: 650000000,
+        staking_apy: 0,
+        risk_level: 'none',
+        staking_details: {
+          min_stake: 0,
+          validator_count: 0,
+          total_staked: 0,
+          confidence: 'none',
+          lock_period: 'N/A',
+          slashing_risk: 'N/A'
+        }
+      },
+      {
+        id: 'klaytn',
+        symbol: 'KLAY',
+        name: 'Klaytn',
+        current_price: 0.18,
+        market_cap: 600000000,
+        staking_apy: 0,
+        risk_level: 'none',
+        staking_details: {
+          min_stake: 0,
+          validator_count: 0,
+          total_staked: 0,
+          confidence: 'none',
+          lock_period: 'N/A',
+          slashing_risk: 'N/A'
+        }
+      },
+      {
+        id: 'eos',
+        symbol: 'EOS',
+        name: 'EOS',
+        current_price: 0.65,
+        market_cap: 600000000,
+        staking_apy: 0,
+        risk_level: 'none',
+        staking_details: {
+          min_stake: 0,
+          validator_count: 0,
+          total_staked: 0,
+          confidence: 'none',
+          lock_period: 'N/A',
+          slashing_risk: 'N/A'
+        }
+      },
+      {
+        id: 'thorchain',
+        symbol: 'RUNE',
+        name: 'THORChain',
+        current_price: 1.8,
+        market_cap: 550000000,
+        staking_apy: 0,
+        risk_level: 'none',
+        staking_details: {
+          min_stake: 0,
+          validator_count: 0,
+          total_staked: 0,
+          confidence: 'none',
+          lock_period: 'N/A',
+          slashing_risk: 'N/A'
+        }
+      },
+      {
+        id: 'pancakeswap-token',
+        symbol: 'CAKE',
+        name: 'PancakeSwap',
+        current_price: 2.1,
+        market_cap: 500000000,
+        staking_apy: 0,
+        risk_level: 'none',
+        staking_details: {
+          min_stake: 0,
+          validator_count: 0,
+          total_staked: 0,
+          confidence: 'none',
+          lock_period: 'N/A',
+          slashing_risk: 'N/A'
+        }
+      },
+      {
+        id: 'compound-governance-token',
+        symbol: 'COMP',
+        name: 'Compound',
+        current_price: 55,
+        market_cap: 450000000,
+        staking_apy: 0,
+        risk_level: 'none',
+        staking_details: {
+          min_stake: 0,
+          validator_count: 0,
+          total_staked: 0,
+          confidence: 'none',
+          lock_period: 'N/A',
+          slashing_risk: 'N/A'
+        }
+      },
+      {
+        id: 'maker',
+        symbol: 'MKR',
+        name: 'Maker',
+        current_price: 1200,
+        market_cap: 1100000000,
+        staking_apy: 0,
+        risk_level: 'none',
+        staking_details: {
+          min_stake: 0,
+          validator_count: 0,
+          total_staked: 0,
+          confidence: 'none',
+          lock_period: 'N/A',
+          slashing_risk: 'N/A'
+        }
+      },
+      {
+        id: 'aave',
+        symbol: 'AAVE',
+        name: 'Aave',
+        current_price: 85,
+        market_cap: 1200000000,
+        staking_apy: 0,
+        risk_level: 'none',
+        staking_details: {
+          min_stake: 0,
+          validator_count: 0,
+          total_staked: 0,
+          confidence: 'none',
+          lock_period: 'N/A',
+          slashing_risk: 'N/A'
+        }
+      },
+      {
+        id: 'curve-dao-token',
+        symbol: 'CRV',
+        name: 'Curve DAO Token',
+        current_price: 0.45,
+        market_cap: 400000000,
+        staking_apy: 0,
+        risk_level: 'none',
+        staking_details: {
+          min_stake: 0,
+          validator_count: 0,
+          total_staked: 0,
+          confidence: 'none',
+          lock_period: 'N/A',
+          slashing_risk: 'N/A'
+        }
+      },
+      {
+        id: 'synthetix-network-token',
+        symbol: 'SNX',
+        name: 'Synthetix',
+        current_price: 2.8,
+        market_cap: 400000000,
+        staking_apy: 0,
+        risk_level: 'none',
+        staking_details: {
+          min_stake: 0,
+          validator_count: 0,
+          total_staked: 0,
+          confidence: 'none',
+          lock_period: 'N/A',
+          slashing_risk: 'N/A'
+        }
+      },
+      {
+        id: 'yearn-finance',
+        symbol: 'YFI',
+        name: 'yearn.finance',
+        current_price: 6500,
+        market_cap: 220000000,
+        staking_apy: 0,
+        risk_level: 'none',
+        staking_details: {
+          min_stake: 0,
+          validator_count: 0,
+          total_staked: 0,
+          confidence: 'none',
+          lock_period: 'N/A',
+          slashing_risk: 'N/A'
+        }
+      },
+      {
+        id: '1inch',
+        symbol: '1INCH',
+        name: '1inch',
+        current_price: 0.35,
+        market_cap: 400000000,
+        staking_apy: 0,
+        risk_level: 'none',
+        staking_details: {
+          min_stake: 0,
+          validator_count: 0,
+          total_staked: 0,
+          confidence: 'none',
+          lock_period: 'N/A',
+          slashing_risk: 'N/A'
+        }
+      },
+      {
+        id: 'sushi',
+        symbol: 'SUSHI',
+        name: 'SushiSwap',
+        current_price: 1.2,
+        market_cap: 300000000,
+        staking_apy: 0,
+        risk_level: 'none',
+        staking_details: {
+          min_stake: 0,
+          validator_count: 0,
+          total_staked: 0,
+          confidence: 'none',
+          lock_period: 'N/A',
+          slashing_risk: 'N/A'
+        }
+      },
+      {
+        id: 'balancer',
+        symbol: 'BAL',
+        name: 'Balancer',
+        current_price: 3.8,
+        market_cap: 200000000,
+        staking_apy: 0,
+        risk_level: 'none',
+        staking_details: {
+          min_stake: 0,
+          validator_count: 0,
+          total_staked: 0,
+          confidence: 'none',
+          lock_period: 'N/A',
+          slashing_risk: 'N/A'
+        }
+      },
+      {
+        id: 'ren',
+        symbol: 'REN',
+        name: 'REN',
+        current_price: 0.08,
+        market_cap: 80000000,
+        staking_apy: 0,
+        risk_level: 'none',
+        staking_details: {
+          min_stake: 0,
+          validator_count: 0,
+          total_staked: 0,
+          confidence: 'none',
+          lock_period: 'N/A',
+          slashing_risk: 'N/A'
+        }
+      },
+      {
+        id: 'kyber-network-crystal',
+        symbol: 'KNC',
+        name: 'Kyber Network Crystal',
+        current_price: 0.65,
+        market_cap: 120000000,
+        staking_apy: 0,
+        risk_level: 'none',
+        staking_details: {
+          min_stake: 0,
+          validator_count: 0,
+          total_staked: 0,
+          confidence: 'none',
+          lock_period: 'N/A',
+          slashing_risk: 'N/A'
+        }
+      },
+      {
+        id: 'bancor',
+        symbol: 'BNT',
+        name: 'Bancor',
+        current_price: 0.45,
+        market_cap: 100000000,
+        staking_apy: 0,
+        risk_level: 'none',
+        staking_details: {
+          min_stake: 0,
+          validator_count: 0,
+          total_staked: 0,
+          confidence: 'none',
+          lock_period: 'N/A',
+          slashing_risk: 'N/A'
+        }
+      }
+    ]
+  };
       {
         id: 'ethereum',
         symbol: 'ETH',
