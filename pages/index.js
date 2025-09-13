@@ -55,9 +55,7 @@ export default function Home() {
                 <li><Link href="/staking" style={{ color: 'white', textDecoration: 'none' }}>Staking</Link></li>
                 <li><Link href="/arbitrage" style={{ color: 'white', textDecoration: 'none' }}>Arbitrage</Link></li>
                 <li><Link href="/airdrop" style={{ color: 'white', textDecoration: 'none' }}>Airdrops</Link></li>
-                {admin && (
-                  <li><Link href="/admin/dashboard" style={{ color: '#ff6b6b', textDecoration: 'none', fontWeight: '600' }}>🔐 Admin</Link></li>
-                )}
+                <li><Link href="/admin/login" style={{ color: '#ff6b6b', textDecoration: 'none', fontWeight: '600' }}>🔐 Admin</Link></li>
                 <li>
                   <button onClick={logout} style={{
                     background: 'transparent',
@@ -82,9 +80,7 @@ export default function Home() {
                   borderRadius: '25px',
                   textDecoration: 'none'
                 }}>Sign Up</Link></li>
-                {admin && (
-                  <li><Link href="/admin/dashboard" style={{ color: '#ff6b6b', textDecoration: 'none', fontWeight: '600' }}>🔐 Admin</Link></li>
-                )}
+                <li><Link href="/admin/login" style={{ color: '#ff6b6b', textDecoration: 'none', fontWeight: '600' }}>🔐 Admin</Link></li>
               </>
             )}
           </ul>
@@ -157,6 +153,17 @@ export default function Home() {
                 }}>
                   Start Staking
                 </Link>
+                <Link href="/admin/login" style={{
+                  background: 'linear-gradient(45deg, #ff6b6b, #ffa500)',
+                  color: 'white',
+                  padding: '15px 30px',
+                  borderRadius: '50px',
+                  textDecoration: 'none',
+                  fontSize: '16px',
+                  fontWeight: '600'
+                }}>
+                  🔐 Admin Panel
+                </Link>
               </>
             ) : (
               <>
@@ -181,6 +188,17 @@ export default function Home() {
                   fontWeight: '600'
                 }}>
                   Inloggen
+                </Link>
+                <Link href="/admin/login" style={{
+                  background: 'linear-gradient(45deg, #ff6b6b, #ffa500)',
+                  color: 'white',
+                  padding: '15px 30px',
+                  borderRadius: '50px',
+                  textDecoration: 'none',
+                  fontSize: '16px',
+                  fontWeight: '600'
+                }}>
+                  🔐 Admin Panel
                 </Link>
               </>
             )}
@@ -430,6 +448,17 @@ export default function Home() {
                 fontWeight: '600'
               }}>
                 Inloggen
+              </Link>
+              <Link href="/admin/login" style={{
+                background: 'linear-gradient(45deg, #ff6b6b, #ffa500)',
+                color: 'white',
+                padding: '15px 30px',
+                borderRadius: '50px',
+                textDecoration: 'none',
+                fontSize: '16px',
+                fontWeight: '600'
+              }}>
+                🔐 Admin Panel
               </Link>
             </div>
           </div>
