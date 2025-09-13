@@ -1,5 +1,7 @@
 import Link from 'next/link'
 import { useState } from 'react'
+import { useAuth } from '../lib/auth'
+import { useRouter } from 'next/router'
 
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -9,6 +11,8 @@ export default function Login() {
   })
   const [isLoading, setIsLoading] = useState(false)
   const [message, setMessage] = useState('')
+  const { login } = useAuth()
+  const router = useRouter()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -16,12 +20,14 @@ export default function Login() {
     setMessage('')
 
     setTimeout(() => {
-      if (formData.email === 'demo@cryptowealth.com' && formData.password === 'demo123') {
+      const result = login(formData.email, formData.password)
+      
+      if (result.success) {
         setMessage('✅ Succesvol ingelogd! Je wordt doorgestuurd...')
         setIsLoading(false)
         
         setTimeout(() => {
-          window.location.href = '/dashboard'
+          router.push('/dashboard')
         }, 2000)
       } else {
         setMessage('❌ Onjuiste inloggegevens. Probeer: demo@cryptowealth.com / demo123')
@@ -39,12 +45,43 @@ export default function Login() {
 
   return (
     <div>
-      <nav className="navbar">
-        <div className="nav-container">
-          <Link href="/" className="logo">🚀 CryptoWealth</Link>
-          <ul className="nav-links">
-            <li><Link href="/">Home</Link></li>
-            <li><Link href="/register">Sign Up</Link></li>
+      <nav style={{
+        position: 'fixed',
+        top: 0,
+        width: '100%',
+        background: 'rgba(15, 15, 35, 0.95)',
+        backdropFilter: 'blur(20px)',
+        zIndex: 1000,
+        padding: '15px 0',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
+      }}>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          maxWidth: '1200px',
+          margin: '0 auto',
+          padding: '0 20px'
+        }}>
+          <Link href="/" style={{
+            fontSize: '28px',
+            fontWeight: '800',
+            background: 'linear-gradient(45deg, #00d4ff, #ff6b6b)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            textDecoration: 'none'
+          }}>
+            🚀 CryptoWealth
+          </Link>
+          <ul style={{
+            display: 'flex',
+            gap: '30px',
+            listStyle: 'none',
+            margin: 0,
+            padding: 0
+          }}>
+            <li><Link href="/" style={{ color: 'white', textDecoration: 'none' }}>Home</Link></li>
+            <li><Link href="/register" style={{ color: 'white', textDecoration: 'none' }}>Sign Up</Link></li>
           </ul>
         </div>
       </nav>
@@ -167,13 +204,16 @@ export default function Login() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="btn"
-                style={{ 
-                  width: '100%', 
+                style={{
+                  width: '100%',
                   padding: '15px',
                   fontSize: '18px',
-                  opacity: isLoading ? 0.7 : 1,
-                  cursor: isLoading ? 'not-allowed' : 'pointer'
+                  background: 'linear-gradient(45deg, #00d4ff, #ff6b6b)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '50px',
+                  cursor: isLoading ? 'not-allowed' : 'pointer',
+                  opacity: isLoading ? 0.7 : 1
                 }}
               >
                 {isLoading ? 'Inloggen...' : 'Inloggen'}
@@ -210,7 +250,7 @@ export default function Login() {
               border: '1px solid rgba(0, 212, 255, 0.2)'
             }}>
               <h3 style={{ color: '#00d4ff', marginBottom: '15px', fontSize: '1.1rem' }}>
-                🔒 Beveiligde Inlog
+                �� Beveiligde Inlog
               </h3>
               <ul style={{ listStyle: 'none', padding: 0, fontSize: '14px', opacity: 0.8 }}>
                 <li style={{ marginBottom: '8px' }}>✓ End-to-end encryptie</li>

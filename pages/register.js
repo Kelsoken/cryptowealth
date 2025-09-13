@@ -1,5 +1,7 @@
 import Link from 'next/link'
 import { useState } from 'react'
+import { useAuth } from '../lib/auth'
+import { useRouter } from 'next/router'
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -11,6 +13,8 @@ export default function Register() {
   })
   const [isLoading, setIsLoading] = useState(false)
   const [message, setMessage] = useState('')
+  const { register } = useAuth()
+  const router = useRouter()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -30,12 +34,16 @@ export default function Register() {
         return
       }
 
-      setMessage('✅ Account succesvol aangemaakt! Je wordt doorgestuurd...')
-      setIsLoading(false)
+      const result = register(formData)
       
-      setTimeout(() => {
-        window.location.href = '/dashboard'
-      }, 2000)
+      if (result.success) {
+        setMessage('✅ Account succesvol aangemaakt! Je wordt doorgestuurd...')
+        setIsLoading(false)
+        
+        setTimeout(() => {
+          router.push('/dashboard')
+        }, 2000)
+      }
     }, 1500)
   }
 
@@ -48,12 +56,43 @@ export default function Register() {
 
   return (
     <div>
-      <nav className="navbar">
-        <div className="nav-container">
-          <Link href="/" className="logo">🚀 CryptoWealth</Link>
-          <ul className="nav-links">
-            <li><Link href="/">Home</Link></li>
-            <li><Link href="/login">Login</Link></li>
+      <nav style={{
+        position: 'fixed',
+        top: 0,
+        width: '100%',
+        background: 'rgba(15, 15, 35, 0.95)',
+        backdropFilter: 'blur(20px)',
+        zIndex: 1000,
+        padding: '15px 0',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
+      }}>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          maxWidth: '1200px',
+          margin: '0 auto',
+          padding: '0 20px'
+        }}>
+          <Link href="/" style={{
+            fontSize: '28px',
+            fontWeight: '800',
+            background: 'linear-gradient(45deg, #00d4ff, #ff6b6b)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            textDecoration: 'none'
+          }}>
+            🚀 CryptoWealth
+          </Link>
+          <ul style={{
+            display: 'flex',
+            gap: '30px',
+            listStyle: 'none',
+            margin: 0,
+            padding: 0
+          }}>
+            <li><Link href="/" style={{ color: 'white', textDecoration: 'none' }}>Home</Link></li>
+            <li><Link href="/login" style={{ color: 'white', textDecoration: 'none' }}>Login</Link></li>
           </ul>
         </div>
       </nav>
@@ -217,13 +256,16 @@ export default function Register() {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="btn"
-                style={{ 
-                  width: '100%', 
+                style={{
+                  width: '100%',
                   padding: '15px',
                   fontSize: '18px',
-                  opacity: isLoading ? 0.7 : 1,
-                  cursor: isLoading ? 'not-allowed' : 'pointer'
+                  background: 'linear-gradient(45deg, #00d4ff, #ff6b6b)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '50px',
+                  cursor: isLoading ? 'not-allowed' : 'pointer',
+                  opacity: isLoading ? 0.7 : 1
                 }}
               >
                 {isLoading ? 'Account wordt aangemaakt...' : 'Account Aanmaken'}
