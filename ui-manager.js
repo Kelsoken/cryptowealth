@@ -115,9 +115,19 @@ class UIManager {
         this.showLoading();
 
         try {
-            // Use mock data for demonstration
-            const cryptoData = MOCK_DATA.cryptocurrencies || [];
-            const globalData = MOCK_DATA.global || {};
+            // Try to fetch real data from APIs
+            let cryptoData = [];
+            let globalData = {};
+            
+            try {
+                cryptoData = await apiManager.fetchAllData();
+                globalData = await apiManager.getGlobalData();
+            } catch (apiError) {
+                console.warn('API calls failed, falling back to mock data:', apiError);
+                // Fallback to mock data if API calls fail
+                cryptoData = MOCK_DATA.cryptocurrencies || [];
+                globalData = MOCK_DATA.global || {};
+            }
             
             this.updateGlobalStats(globalData);
             this.cryptoData = cryptoData;

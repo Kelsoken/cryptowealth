@@ -526,6 +526,246 @@ class APIManager {
 
         return status;
     }
+
+    /**
+     * Fetch data from CoinGecko API
+     */
+    async fetchFromCoinGecko() {
+        if (!CONFIG.APIs.coinGecko.enabled) return null;
+        
+        if (!this.checkRateLimit('coinGecko')) {
+            throw new Error('Rate limit bereikt. Wacht even voordat je nieuwe data ophaalt.');
+        }
+        
+        try {
+            const url = `${CONFIG.APIs.coinGecko.baseUrl}/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=50&page=1&sparkline=false&price_change_percentage=24h`;
+            const response = await fetch(url);
+            this.incrementRateLimit('coinGecko');
+            this.updateRateLimitDisplay();
+            
+            if (!response.ok) {
+                throw new Error(`CoinGecko API error: ${response.status}`);
+            }
+            
+            return await response.json();
+        } catch (error) {
+            console.error('Fout bij ophalen CoinGecko data:', error);
+            return null;
+        }
+    }
+
+    /**
+     * Fetch data from CoinMarketCap API
+     */
+    async fetchFromCoinMarketCap() {
+        if (!CONFIG.APIs.coinMarketCap.enabled) return null;
+        
+        if (!this.checkRateLimit('coinMarketCap')) {
+            throw new Error('Rate limit bereikt. Wacht even voordat je nieuwe data ophaalt.');
+        }
+        
+        try {
+            const url = `${CONFIG.APIs.coinMarketCap.baseUrl}/cryptocurrency/listings/latest?limit=50`;
+            const response = await fetch(url, {
+                headers: {
+                    'X-CMC_PRO_API_KEY': CONFIG.APIs.coinMarketCap.key
+                }
+            });
+            this.incrementRateLimit('coinMarketCap');
+            this.updateRateLimitDisplay();
+            
+            if (!response.ok) {
+                throw new Error(`CoinMarketCap API error: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            return data.data;
+        } catch (error) {
+            console.error('Fout bij ophalen CoinMarketCap data:', error);
+            return null;
+        }
+    }
+
+    /**
+     * Fetch data from StakingRewards API
+     */
+    async fetchFromStakingRewards() {
+        if (!CONFIG.APIs.stakingRewards.enabled || !CONFIG.APIs.stakingRewards.key) return null;
+        
+        if (!this.checkRateLimit('stakingRewards')) {
+            throw new Error('Rate limit bereikt. Wacht even voordat je nieuwe data ophaalt.');
+        }
+        
+        try {
+            const url = `${CONFIG.APIs.stakingRewards.baseUrl}/assets?limit=50`;
+            const response = await fetch(url, {
+                headers: {
+                    'Authorization': `Bearer ${CONFIG.APIs.stakingRewards.key}`
+                }
+            });
+            this.incrementRateLimit('stakingRewards');
+            this.updateRateLimitDisplay();
+            
+            if (!response.ok) {
+                throw new Error(`StakingRewards API error: ${response.status}`);
+            }
+            
+            return await response.json();
+        } catch (error) {
+            console.error('Fout bij ophalen StakingRewards data:', error);
+            return null;
+        }
+    }
+
+    /**
+     * Fetch data from DeFiLlama API
+     */
+    async fetchFromDeFiLlama() {
+        if (!CONFIG.APIs.deFiLlama.enabled) return null;
+        
+        if (!this.checkRateLimit('deFiLlama')) {
+            throw new Error('Rate limit bereikt. Wacht even voordat je nieuwe data ophaalt.');
+        }
+        
+        try {
+            const url = `${CONFIG.APIs.deFiLlama.baseUrl}/pools`;
+            const response = await fetch(url);
+            this.incrementRateLimit('deFiLlama');
+            this.updateRateLimitDisplay();
+            
+            if (!response.ok) {
+                throw new Error(`DeFiLlama API error: ${response.status}`);
+            }
+            
+            return await response.json();
+        } catch (error) {
+            console.error('Fout bij ophalen DeFiLlama data:', error);
+            return null;
+        }
+    }
+
+    /**
+     * Fetch all data from enabled APIs
+     */
+    async fetchAllData() {
+        if (!this.checkGlobalRateLimit()) {
+            throw new Error('Rate limit bereikt. Wacht even voordat je nieuwe data ophaalt.');
+        }
+        
+        try {
+            const [coinGeckoData, coinMarketCapData, stakingRewardsData, deFiLlamaData] = await Promise.all([
+                this.fetchFromCoinGecko(),
+                this.fetchFromCoinMarketCap(),
+                this.fetchFromStakingRewards(),
+                this.fetchFromDeFiLlama()
+            ]);
+            
+            // Combineer en verwerk de data
+            return this.processData(coinGeckoData, coinMarketCapData, stakingRewardsData, deFiLlamaData);
+        } catch (error) {
+            console.error('Fout bij ophalen data:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Process and combine data from different sources
+     */
+    processData(coinGeckoData, coinMarketCapData, stakingRewardsData, deFiLlamaData) {
+        let processedData = [];
+        
+        // Gebruik CoinGecko data als primaire bron
+        if (coinGeckoData && coinGeckoData.length > 0) {
+            processedData = coinGeckoData.map(item => {
+                // Zoek aanvullende data uit andere bronnen
+                const marketCapItem = coinMarketCapData ? 
+                    coinMarketCapData.find(mc => mc.symbol.toLowerCase() === item.symbol.toLowerCase()) : null;
+                
+                const stakingItem = stakingRewardsData ? 
+                    stakingRewardsData.find(sr => sr.symbol.toLowerCase() === item.symbol.toLowerCase()) : null;
+                
+                const llamaItem = deFiLlamaData ? 
+                    deFiLlamaData.data?.find(ll => ll.symbol.toLowerCase() === item.symbol.toLowerCase()) : null;
+                
+                return {
+                    id: item.id,
+                    name: item.name,
+                    symbol: item.symbol,
+                    logo: item.image,
+                    rank: item.market_cap_rank,
+                    current_price: item.current_price,
+                    market_cap: item.market_cap,
+                    price_change_percentage_24h: item.price_change_percentage_24h,
+                    // Voeg staking data toe indien beschikbaar
+                    staking_apy: stakingItem ? stakingItem.staking_apy : (llamaItem ? llamaItem.apy : null),
+                    exchanges: this.getExchangesForCrypto(item.symbol)
+                };
+            });
+        }
+        
+        return processedData;
+    }
+
+    /**
+     * Get exchanges for a specific cryptocurrency
+     */
+    getExchangesForCrypto(symbol) {
+        // Simuleer exchange data voor demo doeleinden
+        const baseApy = Math.random() * 15 + 1;
+        return [
+            { name: "Bitvavo", apy: parseFloat((baseApy * (0.9 + Math.random() * 0.2)).toFixed(1)), rating: parseFloat((4 + Math.random() * 0.8).toFixed(1)) },
+            { name: "Coinbase", apy: parseFloat((baseApy * (0.8 + Math.random() * 0.2)).toFixed(1)), rating: parseFloat((4 + Math.random() * 0.7).toFixed(1)) },
+            { name: "Binance", apy: parseFloat((baseApy * (1.0 + Math.random() * 0.2)).toFixed(1)), rating: parseFloat((4.2 + Math.random() * 0.8).toFixed(1)) },
+            { name: "Kraken", apy: parseFloat((baseApy * (0.85 + Math.random() * 0.2)).toFixed(1)), rating: parseFloat((4 + Math.random() * 0.7).toFixed(1)) }
+        ];
+    }
+
+    /**
+     * Check global rate limit
+     */
+    checkGlobalRateLimit() {
+        const now = Date.now();
+        const timeDiff = (now - CONFIG.app.lastRequestTime) / 1000;
+        
+        if (timeDiff > CONFIG.app.intervalSeconds) {
+            // Interval is verstreken, reset teller
+            CONFIG.app.requestsMade = 0;
+            CONFIG.app.lastRequestTime = now;
+            return true;
+        }
+        
+        if (CONFIG.app.requestsMade < CONFIG.app.requestLimit) {
+            return true;
+        }
+        
+        return false;
+    }
+
+    /**
+     * Update rate limit display
+     */
+    updateRateLimitDisplay() {
+        const progressPercent = (CONFIG.app.requestsMade / CONFIG.app.requestLimit) * 100;
+        const rateLimitProgress = document.getElementById('rateLimitProgress');
+        if (rateLimitProgress) {
+            rateLimitProgress.style.width = `${progressPercent}%`;
+        }
+        
+        // Update status tekst
+        const apiStatus = document.getElementById('api-status');
+        if (apiStatus) {
+            if (progressPercent < 70) {
+                apiStatus.textContent = 'Actief';
+                apiStatus.className = 'stats-number positive';
+            } else if (progressPercent < 90) {
+                apiStatus.textContent = 'Waarschuwing';
+                apiStatus.className = 'stats-number text-warning';
+            } else {
+                apiStatus.textContent = 'Bijna vol';
+                apiStatus.className = 'stats-number negative';
+            }
+        }
+    }
 }
 
 // Initialize API Manager
