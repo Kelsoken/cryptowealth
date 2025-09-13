@@ -1,1 +1,9 @@
-const nextConfig = { output: "export", trailingSlash: false, assetPrefix: "./", images: { unoptimized: true } }; module.exports = nextConfig
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  trailingSlash: false,
+  images: { 
+    unoptimized: true 
+  }
+}
+
+module.exports = nextConfig

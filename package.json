@@ -1,1 +1,22 @@
-{"name":"cryptowealth-2.0","version":"2.0.0","dependencies":{"next":"^14.0.0","react":"^18.0.0","react-dom":"^18.0.0"}}
+{
+  "name": "cryptowealth-2.0",
+  "version": "2.0.0",
+  "description": "Modern CryptoWealth Platform - Next.js",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "vercel-build": "next build",
+    "export": "next build && next export"
+  },
+  "dependencies": {
+    "next": "^14.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.0.0",
+    "eslint-config-next": "^14.0.0"
+  }
+}
