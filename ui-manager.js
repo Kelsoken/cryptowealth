@@ -115,17 +115,12 @@ class UIManager {
         this.showLoading();
 
         try {
-            // Load global data
-            const globalData = await apiManager.getGlobalData();
+            // Use mock data for demonstration
+            const cryptoData = MOCK_DATA.cryptocurrencies || [];
+            const globalData = MOCK_DATA.global || {};
+            
             this.updateGlobalStats(globalData);
-
-            // Load cryptocurrency data
-            const cryptoData = await apiManager.getCryptocurrencies(this.itemsPerPage, this.currentPage);
-            
-            // Enhance with staking data
-            const enhancedData = await this.enhanceWithStakingData(cryptoData);
-            
-            this.cryptoData = enhancedData;
+            this.cryptoData = cryptoData;
             this.applyFilters();
             
         } catch (error) {
@@ -171,7 +166,9 @@ class UIManager {
         // Apply exchange filter
         if (this.currentFilter !== 'all') {
             filtered = filtered.filter(crypto => 
-                crypto.staking?.exchanges?.includes(this.currentFilter.toLowerCase())
+                crypto.exchanges?.some(exchange => 
+                    exchange.name.toLowerCase() === this.currentFilter.toLowerCase()
+                )
             );
         }
 
@@ -188,8 +185,12 @@ class UIManager {
             let aValue, bValue;
             
             if (this.sortBy === 'apy') {
-                aValue = a.staking?.apy || 0;
-                bValue = b.staking?.apy || 0;
+                const aBestExchange = a.exchanges?.reduce((best, current) => 
+                    current.apy > best.apy ? current : best, a.exchanges[0] || { apy: 0 });
+                const bBestExchange = b.exchanges?.reduce((best, current) => 
+                    current.apy > best.apy ? current : best, b.exchanges[0] || { apy: 0 });
+                aValue = aBestExchange?.apy || 0;
+                bValue = bBestExchange?.apy || 0;
             } else {
                 aValue = a[this.sortBy] || 0;
                 bValue = b[this.sortBy] || 0;
@@ -289,25 +290,24 @@ class UIManager {
      * Create HTML for a cryptocurrency card
      */
     createCryptoCard(crypto) {
-        const staking = crypto.staking || {};
-        const apy = staking.apy || 0;
+        const exchanges = crypto.exchanges || [];
+        const bestExchange = exchanges.reduce((best, current) => 
+            current.apy > best.apy ? current : best, exchanges[0] || { apy: 0, name: 'N/A' });
+        const apy = bestExchange.apy || 0;
         const apyClass = this.getApyClass(apy);
-        const exchanges = staking.exchanges || [];
         
         return `
             <div class="col-lg-6 col-xl-4">
-                <div class="crypto-card">
+                <div class="crypto-card ${apy > 10 ? 'best-apy' : ''}">
                     <div class="crypto-header">
                         <div class="crypto-info">
-                            <div class="crypto-icon">
-                                ${crypto.symbol.charAt(0)}
-                            </div>
+                            <img src="${crypto.logo}" alt="${crypto.name}" class="crypto-logo" onerror="this.style.display='none'">
                             <div>
                                 <div class="crypto-name">${crypto.name}</div>
                                 <div class="crypto-symbol">${crypto.symbol.toUpperCase()}</div>
                             </div>
                         </div>
-                        <div class="crypto-rank">#${crypto.market_cap_rank || 'N/A'}</div>
+                        <div class="crypto-rank">#${crypto.rank || 'N/A'}</div>
                     </div>
                     
                     <div class="crypto-stats">
@@ -316,15 +316,15 @@ class UIManager {
                             <div class="stat-label">Prijs</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-value ${apyClass}">${apy.toFixed(2)}%</div>
-                            <div class="stat-label">APY</div>
+                            <div class="stat-value apy-value ${apyClass}">${apy.toFixed(1)}%</div>
+                            <div class="stat-label">Beste APY</div>
                         </div>
                         <div class="stat-item">
                             <div class="stat-value">€${this.formatNumber(crypto.market_cap)}</div>
                             <div class="stat-label">Market Cap</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-value ${crypto.price_change_percentage_24h >= 0 ? 'text-success' : 'text-danger'}">
+                            <div class="stat-value ${crypto.price_change_percentage_24h >= 0 ? 'positive' : 'negative'}">
                                 ${crypto.price_change_percentage_24h >= 0 ? '+' : ''}${crypto.price_change_percentage_24h?.toFixed(2) || '0.00'}%
                             </div>
                             <div class="stat-label">24h Change</div>
@@ -334,7 +334,9 @@ class UIManager {
                     ${exchanges.length > 0 ? `
                         <div class="exchange-badges">
                             ${exchanges.map(exchange => `
-                                <span class="exchange-badge exchange-${exchange}">${CONFIG.exchanges[exchange]?.name || exchange}</span>
+                                <span class="exchange-badge badge-${exchange.name.toLowerCase()}">
+                                    ${exchange.name}: ${exchange.apy.toFixed(1)}%
+                                </span>
                             `).join('')}
                         </div>
                     ` : ''}
@@ -436,9 +438,12 @@ class UIManager {
         }
 
         if (avgApy && this.filteredData.length > 0) {
-            const avg = this.filteredData.reduce((sum, crypto) => 
-                sum + (crypto.staking?.apy || 0), 0) / this.filteredData.length;
-            avgApy.textContent = `${avg.toFixed(2)}%`;
+            const avg = this.filteredData.reduce((sum, crypto) => {
+                const bestExchange = crypto.exchanges?.reduce((best, current) => 
+                    current.apy > best.apy ? current : best, crypto.exchanges[0] || { apy: 0 });
+                return sum + (bestExchange?.apy || 0);
+            }, 0) / this.filteredData.length;
+            avgApy.textContent = `${avg.toFixed(1)}%`;
         }
     }
 

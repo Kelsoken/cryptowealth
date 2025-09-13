@@ -7,6 +7,7 @@ const CONFIG = {
     // API Configuration
     APIs: {
         coinGecko: {
+            enabled: true,
             baseUrl: 'https://api.coingecko.com/api/v3',
             endpoints: {
                 coins: '/coins/markets',
@@ -20,9 +21,10 @@ const CONFIG = {
                 burst: 10
             },
             requiresKey: false,
-            key: null
+            key: ''
         },
         coinMarketCap: {
+            enabled: true,
             baseUrl: 'https://pro-api.coinmarketcap.com/v1',
             endpoints: {
                 listings: '/cryptocurrency/listings/latest',
@@ -35,25 +37,27 @@ const CONFIG = {
                 burst: 5
             },
             requiresKey: true,
-            key: 'demo_key' // Default demo key
+            key: 'demo_key'
         },
         stakingRewards: {
-            baseUrl: 'https://api.stakingrewards.com/public/v1',
+            enabled: false,
+            baseUrl: 'https://api.stakingrewards.com/v1',
             endpoints: {
                 assets: '/assets',
                 staking: '/staking',
                 providers: '/providers'
             },
             rateLimit: {
-                requests: 100,
+                requests: 10,
                 interval: 60000, // 1 minute
                 burst: 20
             },
             requiresKey: true,
-            key: null
+            key: ''
         },
-        defiLlama: {
-            baseUrl: 'https://api.llama.fi',
+        deFiLlama: {
+            enabled: false,
+            baseUrl: 'https://yields.llama.fi',
             endpoints: {
                 protocols: '/protocols',
                 tvl: '/tvl',
@@ -65,7 +69,7 @@ const CONFIG = {
                 burst: 50
             },
             requiresKey: false,
-            key: null
+            key: ''
         }
     },
 
@@ -115,7 +119,11 @@ const CONFIG = {
         maxItems: 100,
         refreshInterval: 300000, // 5 minutes
         cacheTimeout: 300000, // 5 minutes
-        theme: 'light'
+        theme: 'light',
+        requestLimit: 10,
+        intervalSeconds: 90,
+        requestsMade: 3,
+        lastRequestTime: Date.now()
     },
 
     // Staking Configuration
@@ -217,56 +225,31 @@ const DEFAULT_SETTINGS = {
 
 // Mock Data for Development
 const MOCK_DATA = {
-    cryptocurrencies: [
-        {
-            id: 'ethereum',
-            name: 'Ethereum',
-            symbol: 'ETH',
-            rank: 2,
-            current_price: 2500,
-            market_cap: 300000000000,
-            total_volume: 15000000000,
-            price_change_percentage_24h: 2.5,
-            staking: {
-                apy: 5.2,
-                minStake: 32,
-                type: 'proof-of-stake',
-                exchanges: ['coinbase', 'kraken', 'binance']
-            }
-        },
-        {
-            id: 'cardano',
-            name: 'Cardano',
-            symbol: 'ADA',
-            rank: 8,
-            current_price: 0.45,
-            market_cap: 15000000000,
-            total_volume: 500000000,
-            price_change_percentage_24h: -1.2,
-            staking: {
-                apy: 4.8,
-                minStake: 10,
-                type: 'delegated-proof-of-stake',
-                exchanges: ['bitvavo', 'binance', 'kraken']
-            }
-        },
-        {
-            id: 'polkadot',
-            name: 'Polkadot',
-            symbol: 'DOT',
-            rank: 12,
-            current_price: 6.5,
-            market_cap: 8000000000,
-            total_volume: 300000000,
-            price_change_percentage_24h: 3.1,
-            staking: {
-                apy: 12.5,
-                minStake: 1,
-                type: 'nominated-proof-of-stake',
-                exchanges: ['kraken', 'binance', 'coinbase']
-            }
+    cryptocurrencies: (() => {
+        const cryptoData = [];
+        // Genereer 50 cryptocurrencies
+        for (let i = 1; i <= 50; i++) {
+            const baseApy = Math.random() * 15 + 1;
+            cryptoData.push({
+                id: i,
+                name: `Crypto ${i}`,
+                symbol: `CR${i}`,
+                logo: "https://cdn.jsdelivr.net/gh/atomiclabs/cryptocurrency-icons@bea1a9722a8c63169dcc6e1d2cf3dffd2e786ddf/128/color/generic.png",
+                rank: i,
+                current_price: Math.random() * 1000 + 1,
+                market_cap: Math.random() * 100000000000 + 1000000000,
+                total_volume: Math.random() * 10000000000 + 100000000,
+                price_change_percentage_24h: (Math.random() - 0.5) * 20,
+                exchanges: [
+                    { name: "Bitvavo", apy: parseFloat((baseApy * (0.9 + Math.random() * 0.2)).toFixed(1)), rating: parseFloat((4 + Math.random() * 0.8).toFixed(1)) },
+                    { name: "Coinbase", apy: parseFloat((baseApy * (0.8 + Math.random() * 0.2)).toFixed(1)), rating: parseFloat((4 + Math.random() * 0.7).toFixed(1)) },
+                    { name: "Binance", apy: parseFloat((baseApy * (1.0 + Math.random() * 0.2)).toFixed(1)), rating: parseFloat((4.2 + Math.random() * 0.8).toFixed(1)) },
+                    { name: "Kraken", apy: parseFloat((baseApy * (0.85 + Math.random() * 0.2)).toFixed(1)), rating: parseFloat((4 + Math.random() * 0.7).toFixed(1)) }
+                ]
+            });
         }
-    ],
+        return cryptoData;
+    })(),
     global: {
         active_cryptocurrencies: 5000,
         total_market_cap: { eur: 1200000000000 },
