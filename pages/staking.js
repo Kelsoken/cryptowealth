@@ -14,7 +14,8 @@ function StakingPage() {
   const [selectedCoin, setSelectedCoin] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage] = useState(12);
+  const [itemsPerPage, setItemsPerPage] = useState(12);
+  const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
     // Only fetch data on client side
@@ -913,7 +914,7 @@ function StakingPage() {
   const totalPages = Math.ceil(allFilteredData.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const filteredData = allFilteredData.slice(startIndex, endIndex);
+  const filteredData = showAll ? allFilteredData : allFilteredData.slice(startIndex, endIndex);
 
   // Reset to first page when filters change
   useEffect(() => {
@@ -1338,15 +1339,15 @@ function StakingPage() {
               <option value="medium-risk">Medium Risk</option>
               <option value="high-risk">High Risk</option>
           </select>
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            style={{
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              style={{
                 padding: '12px 16px',
-              borderRadius: '8px',
+                borderRadius: '8px',
                 border: '1px solid rgba(255,255,255,0.3)',
                 background: 'rgba(255,255,255,0.1)',
-              color: 'white',
+                color: 'white',
                 fontSize: '1rem',
                 backdropFilter: 'blur(10px)',
                 minWidth: '150px'
@@ -1356,7 +1357,23 @@ function StakingPage() {
               <option value="market-cap">Sort by Market Cap</option>
               <option value="price">Sort by Price</option>
               <option value="name">Sort by Name</option>
-          </select>
+            </select>
+            <button
+              onClick={() => setShowAll(!showAll)}
+              style={{
+                padding: '12px 16px',
+                borderRadius: '8px',
+                border: '1px solid rgba(255,255,255,0.3)',
+                background: showAll ? 'rgba(74, 222, 128, 0.3)' : 'rgba(255,255,255,0.1)',
+                color: 'white',
+                fontSize: '1rem',
+                backdropFilter: 'blur(10px)',
+                cursor: 'pointer',
+                minWidth: '120px'
+              }}
+            >
+              {showAll ? 'Show Pages' : 'Show All'}
+            </button>
           </div>
         </div>
         
@@ -1616,7 +1633,7 @@ function StakingPage() {
           )}
 
           {/* Pagination Controls */}
-          {allFilteredData.length > itemsPerPage && (
+          {!showAll && allFilteredData.length > itemsPerPage && (
             <div style={{
               display: 'flex',
               justifyContent: 'center',
@@ -1704,7 +1721,18 @@ function StakingPage() {
             fontSize: '0.9rem',
             marginTop: '20px'
           }}>
-            Showing {startIndex + 1}-{Math.min(endIndex, allFilteredData.length)} of {allFilteredData.length} cryptocurrencies
+            {showAll ? (
+              <>Showing all {allFilteredData.length} cryptocurrencies</>
+            ) : (
+              <>Showing {startIndex + 1}-{Math.min(endIndex, allFilteredData.length)} of {allFilteredData.length} cryptocurrencies</>
+            )}
+            <br />
+            <span style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)' }}>
+              Total coins in database: {displayData.data?.length || 0} | 
+              Filter: {filterBy} | 
+              Search: "{searchTerm}" | 
+              Staking coins: {displayData.data?.filter(coin => coin.staking_apy > 0).length || 0}
+            </span>
           </div>
         </div>
 
