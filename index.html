@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Staking Vergelijking</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header text-center">
+            <h1><i class="fas fa-coins me-2"></i>Crypto Staking Vergelijking</h1>
+            <p class="lead">Vergelijk staking opbrengsten tussen exchanges en vind de beste opties</p>
+        </div>
+
+        <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="staking-tab" data-bs-toggle="tab" data-bs-target="#staking" type="button" role="tab" aria-controls="staking" aria-selected="true">
+                    <i class="fas fa-chart-line me-1"></i> Staking Overzicht
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="backoffice-tab" data-bs-toggle="tab" data-bs-target="#backoffice" type="button" role="tab" aria-controls="backoffice" aria-selected="false">
+                    <i class="fas fa-cog me-1"></i> Backoffice Instellingen
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="myTabContent">
+            <!-- Staking Tab -->
+            <div class="tab-pane fade show active" id="staking" role="tabpanel" aria-labelledby="staking-tab">
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="stats-box">
+                            <div class="stats-number" id="total-crypto">0</div>
+                            <div class="stats-label">Cryptocurrencies</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-box">
+                            <div class="stats-number" id="total-exchanges">4</div>
+                            <div class="stats-label">Exchanges</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-box">
+                            <div class="stats-number" id="avg-apy">0%</div>
+                            <div class="stats-label">Gem. APY</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stats-box">
+                            <div class="stats-number" id="api-status">Actief</div>
+                            <div class="stats-label">API Status</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="exchangeFilter" class="form-label">Filter op Exchange:</label>
+                            <select id="exchangeFilter" class="form-select">
+                                <option value="all">Alle Exchanges</option>
+                                <option value="Bitvavo">Bitvavo</option>
+                                <option value="Coinbase">Coinbase</option>
+                                <option value="Binance">Binance</option>
+                                <option value="Kraken">Kraken</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="searchInput" class="form-label">Zoek Cryptocurrency:</label>
+                            <input type="text" id="searchInput" class="form-control" placeholder="Bijv. Bitcoin, Ethereum...">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h3>Top 50 Cryptocurrencies voor Staking</h3>
+                    <div class="d-flex">
+                        <button class="btn btn-outline-secondary me-2" id="sortApy">
+                            <i class="fas fa-sort-amount-down-alt me-1"></i> Sorteer op APY
+                        </button>
+                        <button class="btn btn-primary" id="refreshData">
+                            <i class="fas fa-sync-alt me-1"></i> Vernieuw Data
+                        </button>
+                    </div>
+                </div>
+
+                <div id="cryptoList" class="row">
+                    <div class="loading-spinner">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Laden...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-center mt-4">
+                    <nav>
+                        <ul class="pagination">
+                            <li class="page-item disabled"><a class="page-link" href="#">Vorige</a></li>
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item"><a class="page-link" href="#">Volgende</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Backoffice Tab -->
+            <div class="tab-pane fade" id="backoffice" role="tabpanel" aria-labelledby="backoffice-tab">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0"><i class="fas fa-cogs me-2"></i>API Instellingen</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-4">
+                                    <h5>API Providers</h5>
+                                    <div class="form-check form-switch mb-2">
+                                        <input class="form-check-input" type="checkbox" id="enableCoinGecko" checked>
+                                        <label class="form-check-label" for="enableCoinGecko">CoinGecko API gebruiken</label>
+                                        <span class="badge bg-success api-status">Actief</span>
+                                    </div>
+                                    <div class="form-check form-switch mb-2">
+                                        <input class="form-check-input" type="checkbox" id="enableCoinMarketCap" checked>
+                                        <label class="form-check-label" for="enableCoinMarketCap">CoinMarketCap API gebruiken</label>
+                                        <span class="badge bg-success api-status">Actief</span>
+                                    </div>
+                                    <div class="form-check form-switch mb-2">
+                                        <input class="form-check-input" type="checkbox" id="enableStakingRewards">
+                                        <label class="form-check-label" for="enableStakingRewards">StakingRewards API gebruiken</label>
+                                        <span class="badge bg-secondary api-status">Inactief</span>
+                                    </div>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="enableDeFiLlama">
+                                        <label class="form-check-label" for="enableDeFiLlama">DeFiLlama API gebruiken</label>
+                                        <span class="badge bg-secondary api-status">Inactief</span>
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <h5>API Keys</h5>
+                                    <div class="mb-3">
+                                        <label for="coinGeckoKey" class="form-label">CoinGecko API Key (optioneel)</label>
+                                        <input type="text" class="form-control" id="coinGeckoKey" placeholder="Voer API key in">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="coinMarketCapKey" class="form-label">CoinMarketCap API Key</label>
+                                        <input type="text" class="form-control" id="coinMarketCapKey" placeholder="Voer API key in" value="demo_key">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="stakingRewardsKey" class="form-label">StakingRewards API Key</label>
+                                        <input type="text" class="form-control" id="stakingRewardsKey" placeholder="Voer API key in">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="deFiLlamaKey" class="form-label">DeFiLlama API Key (optioneel)</label>
+                                        <input type="text" class="form-control" id="deFiLlamaKey" placeholder="Voer API key in">
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <h5>Rate Limit Instellingen</h5>
+                                    <div class="mb-3">
+                                        <label class="form-label">Huidige rate limit: 10 requests per 90 seconden</label>
+                                        <div class="rate-limit-bar">
+                                            <div class="rate-limit-progress" id="rateLimitProgress" style="width: 30%"></div>
+                                        </div>
+                                        <div class="form-text">Huidig verbruik: 3/10 requests</div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="requestLimit" class="form-label">Aantal requests per interval</label>
+                                        <input type="number" class="form-control" id="requestLimit" value="10" min="1" max="100">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="intervalSeconds" class="form-label">Interval in seconden</label>
+                                        <input type="number" class="form-control" id="intervalSeconds" value="90" min="10" max="300">
+                                    </div>
+                                </div>
+
+                                <button class="btn btn-primary" id="saveSettings">
+                                    <i class="fas fa-save me-1"></i> Instellingen Opslaan
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-header bg-info text-white">
+                                <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>API Informatie</h5>
+                            </div>
+                            <div class="card-body">
+                                <h6>CoinGecko</h6>
+                                <p class="small">Gratis API, geen key nodig voor basisgebruik. Rate limit: 10-50 calls/minuut.</p>
+                                
+                                <h6>CoinMarketCap</h6>
+                                <p class="small">Vereist API key. Basic plan: 10.000 calls/maand, 30 calls/minuut.</p>
+                                
+                                <h6>StakingRewards</h6>
+                                <p class="small">Betaalde API, vereist abonnement voor toegang tot staking data.</p>
+                                
+                                <h6>DeFiLlama</h6>
+                                <p class="small">Gratis API, geen key nodig. Rate limit: 300 calls/minuut.</p>
+                                
+                                <div class="alert alert-warning mt-3">
+                                    <i class="fas fa-exclamation-triangle me-1"></i>
+                                    <strong>Rate Limits:</strong> Houd rekening met de rate limits van elke API om tijdelijk geblokkeerd te worden.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card mt-4">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0"><i class="fas fa-database me-2"></i>Data Beheer</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-outline-primary" id="clearCache">
+                                        <i class="fas fa-broom me-1"></i> Cache Leegmaken
+                                    </button>
+                                    <button class="btn btn-outline-info" id="testApis">
+                                        <i class="fas fa-vial me-1"></i> Test API Verbindingen
+                                    </button>
+                                    <button class="btn btn-outline-danger" id="resetSettings">
+                                        <i class="fas fa-undo me-1"></i> Standaardinstellingen
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="config.js"></script>
+    <script src="api-manager.js"></script>
+    <script src="ui-manager.js"></script>
+    <script src="backoffice.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>

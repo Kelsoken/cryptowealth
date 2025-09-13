@@ -1,0 +1,58 @@
+{
+  "name": "crypto-staking-comparison",
+  "version": "1.0.0",
+  "description": "Een webapplicatie voor het vergelijken van crypto staking opbrengsten tussen verschillende exchanges",
+  "main": "index.html",
+  "scripts": {
+    "dev": "npx live-server --port=3000 --open=/index.html",
+    "build": "echo 'Static site - no build step required'",
+    "start": "npx live-server --port=3000 --open=/index.html",
+    "deploy": "vercel --prod",
+    "deploy:preview": "vercel",
+    "lint": "echo 'No linting configured for static site'",
+    "test": "echo 'No tests configured'",
+    "clean": "rm -rf .vercel node_modules package-lock.json",
+    "setup": "npm install && echo 'Setup complete'"
+  },
+  "keywords": [
+    "crypto",
+    "staking",
+    "cryptocurrency",
+    "defi",
+    "yield",
+    "comparison",
+    "trading",
+    "investment"
+  ],
+  "author": "Crypto Staking App",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/crypto-staking-comparison.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/crypto-staking-comparison/issues"
+  },
+  "homepage": "https://crypto-staking-comparison.vercel.app",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "devDependencies": {
+    "live-server": "^1.2.2",
+    "vercel": "^32.0.0"
+  },
+  "dependencies": {},
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
+  "vercel": {
+    "framework": null,
+    "buildCommand": "echo 'Static build - no build step required'",
+    "outputDirectory": ".",
+    "installCommand": "echo 'No dependencies to install'",
+    "devCommand": "npx live-server --port=3000"
+  }
+}
