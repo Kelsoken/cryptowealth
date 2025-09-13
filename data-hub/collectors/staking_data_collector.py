@@ -23,7 +23,6 @@ class StakingDataCollector:
         })
         
         # Rate limiting (5 per minute)
-        self.last_request_times = {}
         self.rate_limits = {
             'coingecko': 5,
             'stakingrewards': 5,
@@ -31,6 +30,7 @@ class StakingDataCollector:
             'defillama': 5,
             'coindesk': 5
         }
+        self.last_request_times = {source: [] for source in self.rate_limits.keys()}
     
     def _rate_limit_check(self, source: str) -> bool:
         """Check if we can make a request to the source"""
