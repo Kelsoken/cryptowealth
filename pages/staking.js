@@ -300,6 +300,250 @@ function StakingPage() {
                 }
               </div>
             </div>
+            <div style={{
+              background: 'rgba(255,255,255,0.1)',
+              borderRadius: '12px',
+              padding: '20px',
+              backdropFilter: 'blur(10px)',
+              border: '1px solid rgba(255,255,255,0.2)'
+            }}>
+              <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.9rem', marginBottom: '8px' }}>
+                Total Market Cap
+              </div>
+              <div style={{ color: '#8b5cf6', fontSize: '2rem', fontWeight: 'bold' }}>
+                ${filteredData.length > 0 ? 
+                  (filteredData.reduce((sum, coin) => sum + (coin.market_cap || 0), 0) / 1e12).toFixed(1) + 'T' 
+                  : '0T'
+                }
+              </div>
+            </div>
+          </div>
+
+          {/* Analytics Section */}
+          <div style={{
+            background: 'rgba(255,255,255,0.1)',
+            borderRadius: '16px',
+            padding: '24px',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255,255,255,0.2)',
+            marginBottom: '30px'
+          }}>
+            <h3 style={{
+              color: 'white',
+              fontSize: '1.5rem',
+              fontWeight: 'bold',
+              margin: '0 0 20px 0'
+            }}>
+              📊 Staking Analytics
+            </h3>
+            
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+              gap: '20px'
+            }}>
+              {/* APY Distribution Chart */}
+              <div style={{
+                background: 'rgba(255,255,255,0.05)',
+                borderRadius: '12px',
+                padding: '20px'
+              }}>
+                <h4 style={{
+                  color: 'white',
+                  fontSize: '1.2rem',
+                  margin: '0 0 16px 0'
+                }}>
+                  APY Distribution
+                </h4>
+                <div style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '8px'
+                }}>
+                  {filteredData.slice(0, 5).map((coin, index) => (
+                    <div key={coin.id} style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      padding: '8px 12px',
+                      background: 'rgba(255,255,255,0.1)',
+                      borderRadius: '8px'
+                    }}>
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px'
+                      }}>
+                        <div style={{
+                          width: '8px',
+                          height: '8px',
+                          borderRadius: '50%',
+                          background: ['#4ade80', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'][index]
+                        }}></div>
+                        <span style={{ color: 'white', fontSize: '0.9rem' }}>
+                          {coin.symbol}
+                        </span>
+                      </div>
+                      <span style={{
+                        color: '#4ade80',
+                        fontSize: '0.9rem',
+                        fontWeight: 'bold'
+                      }}>
+                        {coin.staking_apy}%
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Risk Analysis */}
+              <div style={{
+                background: 'rgba(255,255,255,0.05)',
+                borderRadius: '12px',
+                padding: '20px'
+              }}>
+                <h4 style={{
+                  color: 'white',
+                  fontSize: '1.2rem',
+                  margin: '0 0 16px 0'
+                }}>
+                  Risk Analysis
+                </h4>
+                <div style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '12px'
+                }}>
+                  {['low', 'medium', 'high'].map(risk => {
+                    const count = filteredData.filter(coin => coin.risk_level === risk).length;
+                    const percentage = filteredData.length > 0 ? (count / filteredData.length * 100).toFixed(1) : 0;
+                    return (
+                      <div key={risk} style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center'
+                      }}>
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px'
+                        }}>
+                          <div style={{
+                            width: '12px',
+                            height: '12px',
+                            borderRadius: '50%',
+                            background: getRiskColor(risk)
+                          }}></div>
+                          <span style={{
+                            color: 'white',
+                            fontSize: '0.9rem',
+                            textTransform: 'capitalize'
+                          }}>
+                            {risk} Risk
+                          </span>
+                        </div>
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px'
+                        }}>
+                          <div style={{
+                            width: '60px',
+                            height: '6px',
+                            background: 'rgba(255,255,255,0.2)',
+                            borderRadius: '3px',
+                            overflow: 'hidden'
+                          }}>
+                            <div style={{
+                              width: `${percentage}%`,
+                              height: '100%',
+                              background: getRiskColor(risk),
+                              transition: 'width 0.3s ease'
+                            }}></div>
+                          </div>
+                          <span style={{
+                            color: 'white',
+                            fontSize: '0.9rem',
+                            fontWeight: 'bold',
+                            minWidth: '40px'
+                          }}>
+                            {count}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Market Cap vs APY */}
+              <div style={{
+                background: 'rgba(255,255,255,0.05)',
+                borderRadius: '12px',
+                padding: '20px'
+              }}>
+                <h4 style={{
+                  color: 'white',
+                  fontSize: '1.2rem',
+                  margin: '0 0 16px 0'
+                }}>
+                  Market Cap vs APY
+                </h4>
+                <div style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '8px'
+                }}>
+                  {filteredData.slice(0, 4).map((coin, index) => {
+                    const marketCapB = (coin.market_cap / 1e9).toFixed(1);
+                    const apy = coin.staking_apy || 0;
+                    return (
+                      <div key={coin.id} style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        padding: '8px 12px',
+                        background: 'rgba(255,255,255,0.1)',
+                        borderRadius: '8px'
+                      }}>
+                        <div>
+                          <div style={{
+                            color: 'white',
+                            fontSize: '0.9rem',
+                            fontWeight: '500'
+                          }}>
+                            {coin.symbol}
+                          </div>
+                          <div style={{
+                            color: 'rgba(255,255,255,0.6)',
+                            fontSize: '0.8rem'
+                          }}>
+                            ${marketCapB}B
+                          </div>
+                        </div>
+                        <div style={{
+                          textAlign: 'right'
+                        }}>
+                          <div style={{
+                            color: '#4ade80',
+                            fontSize: '0.9rem',
+                            fontWeight: 'bold'
+                          }}>
+                            {apy}%
+                          </div>
+                          <div style={{
+                            color: 'rgba(255,255,255,0.6)',
+                            fontSize: '0.8rem'
+                          }}>
+                            APY
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Filters and Search */}
@@ -758,6 +1002,295 @@ function StakingPage() {
             </div>
           </div>
         )}
+
+          {/* Portfolio Tracking Section */}
+          <div style={{
+            background: 'rgba(255,255,255,0.1)',
+            borderRadius: '16px',
+            padding: '24px',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255,255,255,0.2)',
+            marginBottom: '30px'
+          }}>
+            <h3 style={{
+              color: 'white',
+              fontSize: '1.5rem',
+              fontWeight: 'bold',
+              margin: '0 0 20px 0'
+            }}>
+              💼 Your Staking Portfolio
+            </h3>
+            
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+              gap: '20px'
+            }}>
+              {/* Portfolio Summary */}
+              <div style={{
+                background: 'rgba(255,255,255,0.05)',
+                borderRadius: '12px',
+                padding: '20px'
+              }}>
+                <h4 style={{
+                  color: 'white',
+                  fontSize: '1.2rem',
+                  margin: '0 0 16px 0'
+                }}>
+                  Portfolio Summary
+                </h4>
+                <div style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '12px'
+                }}>
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
+                  }}>
+                    <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.9rem' }}>
+                      Total Staked Value
+                    </span>
+                    <span style={{ color: 'white', fontSize: '1.1rem', fontWeight: 'bold' }}>
+                      $0.00
+                    </span>
+                  </div>
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
+                  }}>
+                    <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.9rem' }}>
+                      Active Stakes
+                    </span>
+                    <span style={{ color: '#4ade80', fontSize: '1.1rem', fontWeight: 'bold' }}>
+                      0
+                    </span>
+                  </div>
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
+                  }}>
+                    <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.9rem' }}>
+                      Estimated Monthly Rewards
+                    </span>
+                    <span style={{ color: '#f59e0b', fontSize: '1.1rem', fontWeight: 'bold' }}>
+                      $0.00
+                    </span>
+                  </div>
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
+                  }}>
+                    <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.9rem' }}>
+                      Average APY
+                    </span>
+                    <span style={{ color: '#8b5cf6', fontSize: '1.1rem', fontWeight: 'bold' }}>
+                      0.0%
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Recent Activity */}
+              <div style={{
+                background: 'rgba(255,255,255,0.05)',
+                borderRadius: '12px',
+                padding: '20px'
+              }}>
+                <h4 style={{
+                  color: 'white',
+                  fontSize: '1.2rem',
+                  margin: '0 0 16px 0'
+                }}>
+                  Recent Activity
+                </h4>
+                <div style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '8px'
+                }}>
+                  <div style={{
+                    padding: '12px',
+                    background: 'rgba(255,255,255,0.1)',
+                    borderRadius: '8px',
+                    textAlign: 'center'
+                  }}>
+                    <div style={{
+                      color: 'rgba(255,255,255,0.6)',
+                      fontSize: '0.9rem'
+                    }}>
+                      No staking activity yet
+                    </div>
+                    <div style={{
+                      color: 'rgba(255,255,255,0.4)',
+                      fontSize: '0.8rem',
+                      marginTop: '4px'
+                    }}>
+                      Start staking to see your activity here
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Quick Actions */}
+              <div style={{
+                background: 'rgba(255,255,255,0.05)',
+                borderRadius: '12px',
+                padding: '20px'
+              }}>
+                <h4 style={{
+                  color: 'white',
+                  fontSize: '1.2rem',
+                  margin: '0 0 16px 0'
+                }}>
+                  Quick Actions
+                </h4>
+                <div style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '8px'
+                }}>
+                  <button style={{
+                    width: '100%',
+                    background: 'linear-gradient(135deg, #4ade80, #22c55e)',
+                    color: 'white',
+                    border: 'none',
+                    padding: '12px 16px',
+                    borderRadius: '8px',
+                    fontSize: '0.9rem',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    transition: 'transform 0.2s ease'
+                  }}>
+                    Start New Stake
+                  </button>
+                  <button style={{
+                    width: '100%',
+                    background: 'rgba(255,255,255,0.1)',
+                    color: 'white',
+                    border: '1px solid rgba(255,255,255,0.3)',
+                    padding: '12px 16px',
+                    borderRadius: '8px',
+                    fontSize: '0.9rem',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    transition: 'transform 0.2s ease'
+                  }}>
+                    View All Stakes
+                  </button>
+                  <button style={{
+                    width: '100%',
+                    background: 'rgba(255,255,255,0.1)',
+                    color: 'white',
+                    border: '1px solid rgba(255,255,255,0.3)',
+                    padding: '12px 16px',
+                    borderRadius: '8px',
+                    fontSize: '0.9rem',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    transition: 'transform 0.2s ease'
+                  }}>
+                    Claim Rewards
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Education Section */}
+          <div style={{
+            background: 'rgba(255,255,255,0.1)',
+            borderRadius: '16px',
+            padding: '24px',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255,255,255,0.2)',
+            marginBottom: '30px'
+          }}>
+            <h3 style={{
+              color: 'white',
+              fontSize: '1.5rem',
+              fontWeight: 'bold',
+              margin: '0 0 20px 0'
+            }}>
+              📚 Staking Education
+            </h3>
+            
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+              gap: '20px'
+            }}>
+              <div style={{
+                background: 'rgba(255,255,255,0.05)',
+                borderRadius: '12px',
+                padding: '20px'
+              }}>
+                <h4 style={{
+                  color: 'white',
+                  fontSize: '1.1rem',
+                  margin: '0 0 12px 0'
+                }}>
+                  What is Staking?
+                </h4>
+                <p style={{
+                  color: 'rgba(255,255,255,0.8)',
+                  fontSize: '0.9rem',
+                  lineHeight: '1.5',
+                  margin: 0
+                }}>
+                  Staking is the process of locking up your cryptocurrency to support network operations and earn rewards. It's like earning interest on your crypto holdings.
+                </p>
+              </div>
+              
+              <div style={{
+                background: 'rgba(255,255,255,0.05)',
+                borderRadius: '12px',
+                padding: '20px'
+              }}>
+                <h4 style={{
+                  color: 'white',
+                  fontSize: '1.1rem',
+                  margin: '0 0 12px 0'
+                }}>
+                  Risk Factors
+                </h4>
+                <p style={{
+                  color: 'rgba(255,255,255,0.8)',
+                  fontSize: '0.9rem',
+                  lineHeight: '1.5',
+                  margin: 0
+                }}>
+                  Staking involves risks including slashing penalties, lock-up periods, and market volatility. Always research before staking.
+                </p>
+              </div>
+              
+              <div style={{
+                background: 'rgba(255,255,255,0.05)',
+                borderRadius: '12px',
+                padding: '20px'
+              }}>
+                <h4 style={{
+                  color: 'white',
+                  fontSize: '1.1rem',
+                  margin: '0 0 12px 0'
+                }}>
+                  Best Practices
+                </h4>
+                <p style={{
+                  color: 'rgba(255,255,255,0.8)',
+                  fontSize: '0.9rem',
+                  lineHeight: '1.5',
+                  margin: 0
+                }}>
+                  Diversify your stakes, choose reputable validators, understand lock-up periods, and never stake more than you can afford to lose.
+                </p>
+              </div>
+            </div>
+          </div>
 
         {/* Footer Info */}
         <div style={{
